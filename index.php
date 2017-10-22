@@ -155,21 +155,23 @@ else
 				if (!isset($_POST['submitbutton']) || (isset($_POST['submitbutton']) && !$approved_wake && !$approved_sleep))
 				{
 					echo "<h5 id='wait'>Querying Computer State. Please Wait...</h5>";
-					$pinginfo = exec("ping -c 1 " . $COMPUTER_LOCAL_IP[$selectedComputer]);
+                    $output = '';
+                    $result = 0;
+					exec("ping -c 1 " . $COMPUTER_LOCAL_IP[$selectedComputer], $output, $result);
 	    				?>
 	    				<script>
 						document.getElementById('wait').style.display = 'none';
 				        </script>
 	   					<?php
-					if ($pinginfo == "")
-					{
-						$asleep = true;
-						echo "<h5>" . $COMPUTER_NAME[$selectedComputer] . " is presently asleep.</h5>";
-					}
-					else
+					if ($result == 0)
 					{
 						$asleep = false;
 						echo "<h5>" . $COMPUTER_NAME[$selectedComputer] . " is presently awake.</h5>";
+					}
+					else
+					{
+						$asleep = true;
+						echo "<h5>" . $COMPUTER_NAME[$selectedComputer] . " is presently asleep.</h5>";
 					}
 				}
 
@@ -185,9 +187,11 @@ else
 					while ($count <= $MAX_PINGS && $down == true)
 					{
 						echo "Ping " . $count . "...";
-						$pinginfo = exec("ping -c 1 " . $COMPUTER_LOCAL_IP[$selectedComputer]);
+                        $output = '';
+                        $result = 0;
+						exec("ping -c 1 " . $COMPUTER_LOCAL_IP[$selectedComputer], $output, $result);
 						$count++;
-						if ($pinginfo != "")
+						if ($result == 0)
 						{
 							$down = false;
 							echo "<span style='color:#00CC00;'><b>It's Alive!</b></span><br />";
@@ -226,9 +230,11 @@ else
 						while ($count <= $MAX_PINGS && $down == false)
 						{
 							echo "Ping " . $count . "...";
-							$pinginfo = exec("ping -c 1 " . $COMPUTER_LOCAL_IP[$selectedComputer]);
+                            $output = '';
+                            $result = 0;
+							exec("ping -c 1 " . $COMPUTER_LOCAL_IP[$selectedComputer], $output, $result);
 							$count++;
-							if ($pinginfo == "")
+							if ($result != 0)
 							{
 								$down = true;
 								echo "<span style='color:#00CC00;'><b>It's Asleep!</b></span><br />";
